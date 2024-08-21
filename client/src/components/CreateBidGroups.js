@@ -19,7 +19,7 @@ function CreateBidGroups() {
 
   useEffect(() => {
     if (authState.isAuthenticated) {
-      const newSocket = io('http://localhost:5008');
+      const newSocket = io('https://bidengine.onrender.com');
       setSocket(newSocket);
 
       // Cleanup on component unmount
@@ -52,7 +52,7 @@ function CreateBidGroups() {
     }
 
     try {
-      const response = await fetch('http://localhost:5008/bid/createbid', {
+      const response = await fetch('https://bidengine.onrender.com/bid/createbid', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
