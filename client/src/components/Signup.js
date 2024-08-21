@@ -14,7 +14,7 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post('http://localhost:5008/user/register', {
+            const { data } = await axios.post('https://bidengine.onrender.com/user/register', {
                 name: username,
                 email,
                 password
