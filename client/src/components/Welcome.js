@@ -10,7 +10,7 @@ function Welcome() {
 
     useEffect(() => {
         if (authState.isAuthenticated) {
-            fetch('http://localhost:5008/user/', {
+            fetch('https://bidengine.onrender.com/user/', {
                 headers: {
                     'Authorization': `Bearer ${authState.token}`,
                 },
