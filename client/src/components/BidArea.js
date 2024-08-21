@@ -152,7 +152,7 @@ function BidArea() {
             }
 
             const response = await axios.post(
-                `http://localhost:5008/bid/placeBid/${bid._id}`,
+                `https://bidengine.onrender.com/bid/placeBid/${bid._id}`,
                 { bidAmount: amount },
                 {
                     headers: {
