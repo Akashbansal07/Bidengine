@@ -27,7 +27,7 @@ function Notifications() {
 
   const handleResponse = async (id, action) => {
     try {
-      const response = await fetch(`http://localhost:5008/bid/acceptInvite/${id}`, {
+      const response = await fetch(`https://bidengine.onrender.com/bid/acceptInvite/${id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
