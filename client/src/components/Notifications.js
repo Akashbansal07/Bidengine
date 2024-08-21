@@ -12,7 +12,7 @@ function Notifications() {
 
   useEffect(() => {
     if (authState.isAuthenticated) {
-      fetch('http://localhost:5008/bid/', {
+      fetch('https://bidengine.onrender.com/bid/', {
         headers: {
           'Authorization': `Bearer ${authState.token}`,
         },
