@@ -25,7 +25,7 @@ function BidArea() {
     useEffect(() => {
         const fetchBidData = async () => {
             try {
-                const response = await axios.get('http://localhost:5008/bid', {
+                const response = await axios.get('https://bidengine.onrender.com/bid', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -51,7 +51,7 @@ function BidArea() {
 
         const fetchUserInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:5008/user/', {
+                const response = await axios.get('https://bidengine.onrender.com/user/', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -65,7 +65,7 @@ function BidArea() {
         fetchUserInfo();
 
         // Establish a socket connection
-        const newSocket = io('http://localhost:5008');
+        const newSocket = io('https://bidengine.onrender.com');
         setSocket(newSocket);
 
         // Handle incoming bid updates
@@ -125,7 +125,7 @@ function BidArea() {
     const handleInvite = async () => {
         try {
             const response = await axios.post(
-                `http://localhost:5008/bid/invite/${bid._id}/${bidComment}`,
+                `https://bidengine.onrender.com/bid/invite/${bid._id}/${bidComment}`,
                 {},
                 {
                     headers: {
