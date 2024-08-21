@@ -9,7 +9,7 @@ function BidOther({ bidData, rank }) {
     useEffect(() => {
         const fetchUserName = async () => {
             try {
-                const response = await fetch('http://localhost:5008/user/fetchUsers/', {
+                const response = await fetch('https://bidengine.onrender.com/user/fetchUsers/', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Replace with your actual token
                     },
