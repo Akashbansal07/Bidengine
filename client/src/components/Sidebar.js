@@ -33,7 +33,7 @@ function Sidebar() {
             if (authState.isAuthenticated) {
                 try {
                     // Fetch all bids
-                    const bidResponse = await fetch('http://localhost:5008/bid/', {
+                    const bidResponse = await fetch('https://bidengine.onrender.com/bid/', {
                         headers: {
                             'Authorization': `Bearer ${authState.token}`,
                         },
@@ -43,7 +43,7 @@ function Sidebar() {
                     setFilteredBids(bidData.allBids);
 
                     // Fetch user details to check invitations and get userId
-                    const userResponse = await fetch('http://localhost:5008/user/', {
+                    const userResponse = await fetch('https://bidengine.onrender.com/user/', {
                         headers: {
                             'Authorization': `Bearer ${authState.token}`,
                         },
@@ -61,7 +61,7 @@ function Sidebar() {
 
         fetchInfo();
 
-        const newSocket = io('http://localhost:5008');
+        const newSocket = io('https://bidengine.onrender.com');
         setSocket(newSocket);
 
         newSocket.on('submitted', () => {
