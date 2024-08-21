@@ -16,7 +16,7 @@ function User_groups() {
 
     useEffect(() => {
         if (authState.isAuthenticated) {
-            fetch('http://localhost:5008/user/fetchUsers/', {
+            fetch('https://bidengine.onrender.com/user/fetchUsers/', {
                 headers: {
                     'Authorization': `Bearer ${authState.token}`,
                 },
