@@ -22,65 +22,70 @@ function BidArea() {
     const [userId, setUserId] = useState(null);
     const [socket, setSocket] = useState(null);
 
-    useEffect(() => {
-        const fetchBidData = async () => {
-            try {
-                const response = await axios.get('https://bidengine.onrender.com/bid', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                });
+    // Move fetchBidData function here so it can be accessed by other functions
+    const fetchBidData = async () => {
+        try {
+            const response = await axios.get('http://localhost:5008/bid', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
 
-                // Find the specific bid from the allBids array
-                const bid = response.data.allBids.find(bid => bid._id === location.state.bid._id);
-
-                if (bid) {
-                    setBid(bid); // Set the bid state with the specific bid
-                } else {
-                    console.error("Bid not found");
-                }
-            } catch (error) {
-                console.error("Error fetching bid data:", error);
+            const bid = response.data.allBids.find(bid => bid._id === location.state.bid._id);
+            if (bid) {
+                setBid(bid);
+            } else {
+                console.error("Bid not found");
             }
-        };
+        } catch (error) {
+            console.error("Error fetching bid data:", error);
+        }
+    };
 
-        // Fetch the bid data only if location.state has a bid ID
+    useEffect(() => {
         if (location.state && location.state.bid && location.state.bid._id) {
             fetchBidData();
+    
+            const fetchUserInfo = async () => {
+                try {
+                    const response = await axios.get('http://localhost:5008/user/', {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
+                    setUserId(response.data._id);
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            };
+    
+            fetchUserInfo();
+    
+            // Establish a socket connection
+            const newSocket = io('http://localhost:5008');
+            setSocket(newSocket);
+    
+            // Handle incoming bid updates
+            newSocket.on('bidUpdate', (data) => {
+                if (data === location.state.bid._id) {
+                    fetchBidData();
+                    console.log("Received bid update", data);
+                }
+            });
+    
+            // Listen for submission confirmation
+            newSocket.on('submitted', () => {
+                console.log('Bid submission confirmed');
+                fetchBidData(); // Fetch updated bid data after submission
+            });
+    
+            // Clean up the socket connection on component unmount
+            return () => {
+                newSocket.disconnect();
+            };
         }
-
-        const fetchUserInfo = async () => {
-            try {
-                const response = await axios.get('https://bidengine.onrender.com/user/', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                });
-                setUserId(response.data._id);
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-
-        fetchUserInfo();
-
-        // Establish a socket connection
-        const newSocket = io('https://bidengine.onrender.com');
-        setSocket(newSocket);
-
-        // Handle incoming bid updates
-        newSocket.on('bidUpdate', (data) => {
-            if (data === bid?._id) {
-                fetchBidData(); // Check if the bidId matches the current bid._id
-                console.log("Received bid update", data);
-            }
-        });
-
-        // Clean up the socket connection on component unmount
-        return () => {
-            newSocket.disconnect();
-        };
-    }, [location.state, bid?._id]);  // Ensure to include bid._id in dependency array if used in effect
+    }, [location.state]);
+     // Ensure to include bid._id in dependency array if used in effect
 
 
     const getTimeRemaining = () => {
@@ -125,7 +130,7 @@ function BidArea() {
     const handleInvite = async () => {
         try {
             const response = await axios.post(
-                `https://bidengine.onrender.com/bid/invite/${bid._id}/${bidComment}`,
+                `http://localhost:5008/bid/invite/${bid._id}/${bidComment}`,
                 {},
                 {
                     headers: {
@@ -136,6 +141,7 @@ function BidArea() {
             setSuccessMessage("User invited successfully");
             setErrorMessage("");
             socket.emit('update', { bidId: bid._id });
+            fetchBidData(); // Fetch the latest bid data
         } catch (error) {
             console.error("Error sending invitation:", error);
             setErrorMessage("Failed to send invite");
@@ -152,7 +158,7 @@ function BidArea() {
             }
 
             const response = await axios.post(
-                `https://bidengine.onrender.com/bid/placeBid/${bid._id}`,
+                `http://localhost:5008/bid/placeBid/${bid._id}`,
                 { bidAmount: amount },
                 {
                     headers: {
@@ -178,6 +184,7 @@ function BidArea() {
     if (!bid || userId === null) {
         return <p>Loading...</p>;
     }
+
 
     return (
         <AnimatePresence>
